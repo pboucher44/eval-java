@@ -75,10 +75,11 @@ public class BookDAO implements IDAO<Book, Long> {
 		PreparedStatement st = connection.prepareStatement( FIND_ALL_QUERY );
 		ResultSet rs = st.executeQuery();
 		List<Book> book = new ArrayList<>();
-		Book unBook = new Book();
+		Book unBook;
 		ContactDAO monContactDao = new ContactDAO();
 		
-		while ( rs.next() ) {			
+		while ( rs.next() ) {	
+			unBook = new Book();
 			unBook.setId(rs.getString("id"));
 			unBook.setCode(rs.getString("code"));
 			List<Contact> mesContacts = monContactDao.findAllByCodeBook(unBook);

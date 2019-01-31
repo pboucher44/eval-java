@@ -119,7 +119,7 @@ public class App {
 			} while (1 > response || lesId.size() < response);
 		}
 		if (lesId.size() != 0) {
-			System.out.println("Restauration du book : " + lesId.get(response - 1));
+			System.out.println("Suppression du book : " + lesId.get(response - 1).getId());
 			try {
 				monBookDao.remove(lesId.get(response - 1).getId());
 				System.out.println("suppression terminée : book " + lesId.get(response - 1).getId());
@@ -169,7 +169,7 @@ public class App {
 			} while (1 > response || lesId.size() < response);
 		}
 		if (lesId.size() != 0) {
-			System.out.println("Restauration du book : " + lesId.get(response - 1));
+			System.out.println("Restauration du book : " + lesId.get(response - 1).getId());
 			try {
 				book = monBookDao.findById(lesId.get(response - 1).getId());
 				System.out.println("Restauration terminée : book " + lesId.get(response - 1).getId());
