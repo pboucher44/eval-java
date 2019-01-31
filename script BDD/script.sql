@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Dim 27 Janvier 2019 à 11:23
+-- Généré le :  Jeu 31 Janvier 2019 à 16:31
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `evaljava`
 --
+CREATE DATABASE IF NOT EXISTS `evaljava` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `evaljava`;
 
 -- --------------------------------------------------------
 
@@ -42,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `id` varbinary(36) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `phone` int(10) NOT NULL,
+  `phone` varchar(10) COLLATE utf8_bin NOT NULL,
   `type_var` varchar(255) COLLATE utf8_bin NOT NULL,
   `type_num` int(1) NOT NULL,
   `code_book` varbinary(36) NOT NULL,
