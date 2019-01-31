@@ -105,11 +105,10 @@ public class BookDAO implements IDAO<Book, Long> {
 		return findById( b.getId() );
 	}
 	
-	@Override
-	public void remove( Book b ) throws SQLException {
+	public void remove( String id ) throws SQLException {
 		Connection connection = PersistenceManager.getConnection();
 		PreparedStatement st = connection.prepareStatement( REMOVE_QUERY);
-		st.setString( 1, b.getId() );
+		st.setString( 1, id );
 		st.executeUpdate();
 		st.close();
 		connection.close();

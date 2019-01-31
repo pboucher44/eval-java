@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 public class App {
 
-	private static final String BOOK_BKP_DIR = "./resources/backup/";
 	private static final String EXPORT_CSV_DIR = "./resources/CSV/";
 
 	private static final Scanner sc = new Scanner(System.in);
@@ -36,9 +35,153 @@ public class App {
 	private static BookDAO monBookDao = new BookDAO();
 
 	public static void main(String... args) throws SQLException {
-		monBookDao.create(book);
-		dspMainMenu();
+		dspBooknMenu();
 	}
+	
+	public static void dspBooknMenu() throws SQLException {
+		int response;
+		boolean first = true;
+		do {
+			if (!first) {
+				System.out.println("***********************************************");
+				System.out.println("* Mauvais choix, merci de recommencer !       *");
+				System.out.println("***********************************************");
+			}
+			System.out.println("**************************************");
+			System.out.println("*****************Menu*****************");
+			System.out.println("*** 1 - Ajouter un book             **");
+			System.out.println("*** 2 - Modifier un book            **");
+			System.out.println("*** 3 - Supprimer un book           **");
+			System.out.println("*** 4 - Quitter                     **");
+			System.out.println("**************************************");
+			System.out.print("*Votre choix : ");
+			try {
+				response = sc.nextInt();
+			} catch (InputMismatchException e) {
+				response = -1;
+			} finally {
+				sc.nextLine();
+			}
+			first = false;
+		} while (1 > response || 4 < response);
+		switch (response) {
+		case 1:
+			monBookDao.create(book);
+			dspMainMenu();
+			break;
+		case 2:
+			restoreBooks();
+			dspMainMenu();
+			break;
+		case 3:
+			deleteBooks();
+			dspBooknMenu();
+			break;
+		case 4:
+			break;
+		}
+	}
+	
+	private static void deleteBooks() throws SQLException {
+		List<Book> lesId = null;
+		boolean first = true;
+		int compteur = 1;
+		int response = -1;
+		lesId = monBookDao.findAll();
+		
+		if (lesId.size() != 0) {
+			do {
+				if (!first) {
+					System.out.println("***********************************************");
+					System.out.println("* Mauvais choix, merci de recommencer !       *");
+					System.out.println("***********************************************");
+				}
+				System.out.println("**************************************");
+				System.out.println("******* Quel book supprimer ? ********");
+
+				for (Book id : lesId) {
+					System.out.println(compteur + " - " + id.getId());
+					compteur++;
+				}
+				System.out.println("**************************************");
+
+				System.out.print("*Votre choix : ");
+
+				try {
+					response = sc.nextInt();
+				} catch (InputMismatchException e) {
+					response = -1;
+				} finally {
+					sc.nextLine();
+				}
+				first = false;
+
+			} while (1 > response || lesId.size() < response);
+		}
+		if (lesId.size() != 0) {
+			System.out.println("Restauration du book : " + lesId.get(response - 1));
+			try {
+				monBookDao.remove(lesId.get(response - 1).getId());
+				System.out.println("suppression terminée : book " + lesId.get(response - 1).getId());
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.err.println(e);
+			}
+		}else {
+			System.out.println("Aucun book en base");
+		}
+}
+	
+	private static void restoreBooks() throws SQLException {
+		List<Book> lesId = null;
+		boolean first = true;
+		int compteur = 1;
+		int response = -1;
+		lesId = monBookDao.findAll();
+		
+		if (lesId.size() != 0) {
+			do {
+				if (!first) {
+					System.out.println("***********************************************");
+					System.out.println("* Mauvais choix, merci de recommencer !       *");
+					System.out.println("***********************************************");
+				}
+				System.out.println("**************************************");
+				System.out.println("******* Quel book restaurer ? ********");
+
+				for (Book id : lesId) {
+					System.out.println(compteur + " - " + id.getId());
+					compteur++;
+				}
+				System.out.println("**************************************");
+
+				System.out.print("*Votre choix : ");
+
+				try {
+					response = sc.nextInt();
+				} catch (InputMismatchException e) {
+					response = -1;
+				} finally {
+					sc.nextLine();
+				}
+				first = false;
+
+			} while (1 > response || lesId.size() < response);
+		}
+		if (lesId.size() != 0) {
+			System.out.println("Restauration du book : " + lesId.get(response - 1));
+			try {
+				book = monBookDao.findById(lesId.get(response - 1).getId());
+				System.out.println("Restauration terminée : book " + lesId.get(response - 1).getId());
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.err.println(e);
+			}
+		}else {
+			monBookDao.create(book);
+			System.out.println("Aucun book en base nous vous en avons créé un nouveau");
+		}
+}
 
 	public static Contact.Type getTypeFromKeyboard() {
 		int response;
@@ -229,10 +372,8 @@ public class App {
 			System.out.println("* 4 - Lister les contacts            *");
 			System.out.println("* 5 - Rechercher un contact          *");
 			System.out.println("* 6 - Trier les contacts             *");
-			System.out.println("* 7 - Sauvegarder                    *");
-			System.out.println("* 8 - Restaurer                      *");
-			System.out.println("* 9 - Export des contacts            *");
-			System.out.println("* 10 - Quitter                       *");
+			System.out.println("* 7 - Export des contacts            *");
+			System.out.println("* 8 - Quitter                       *");
 			System.out.println("**************************************");
 			System.out.print("*Votre choix : ");
 			try {
@@ -270,122 +411,12 @@ public class App {
 			dspMainMenu();
 			break;
 		case 7:
-			storeContacts();
-			dspMainMenu();
-			break;
-		case 8:
-			restoreContacts();
-			dspMainMenu();
-			break;
-		case 9:
 			exportContacts();
 			dspMainMenu();
 			break;
-		case 10:
-			monBookDao.removeAll();
-			monContactDao.removeAll();
+		case 8:
 			break;
 		}
-	}
-
-	private static void storeContacts() throws NumberFormatException, SQLException {
-	
-		Path path = Paths.get(BOOK_BKP_DIR);
-		boolean first = true;
-		String response = "";
-		String regex = "^[a-zA-Z0-9_+-]*$";
-		
-		if (!Files.isDirectory(path)) {
-			try {
-				Files.createDirectory(path);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		do {
-			if (!first) {
-				System.out.println("***********************************************");
-				System.out.println("* Mauvais choix, merci de recommencer !       *");
-				System.out.println("***********************************************");
-			}
-
-			System.out.print("* nom du fichier : ");
-
-			try {
-				response = sc.nextLine();
-			} catch (InputMismatchException e) {
-				response = "";
-			}
-			first = false;
-		} while (!Pattern.matches(regex,response));
-		
-		String backupFileName = response + ".ser";
-		try (ObjectOutputStream oos = new ObjectOutputStream(
-				Files.newOutputStream(Paths.get(BOOK_BKP_DIR + backupFileName)))) {
-			oos.writeObject(monBookDao.findById(book.getId()));
-			System.out.println("Sauvegarde terminÃ©e : fichier " + backupFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}	
-
-	private static void restoreContacts() throws SQLException {
-		List <Path> lesPaths = new ArrayList<Path>();
-		boolean first = true;
-		int compteur = 1;
-		int response;
-		
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get( BOOK_BKP_DIR ))) {
-	        for (Path entry : stream) {
-	            if (!Files.isDirectory(entry)) {
-	            	lesPaths.add(entry);
-	            }
-	        }
-	    } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		do {
-			if ( !first ) {
-				System.out.println( "***********************************************" );
-				System.out.println( "* Mauvais choix, merci de recommencer !       *" );
-				System.out.println( "***********************************************" );
-			}
-			System.out.println( "**************************************" );
-			System.out.println( "****** Quel fichier restaurer ? ******" );
-			for(Path lePath : lesPaths) {
-				System.out.println(compteur + " - " + lePath);
-				compteur++;
-			}
-			System.out.println( "**************************************" );
-			
-			System.out.print( "*Votre choix : " );
-			
-			try {
-				response = sc.nextInt();
-			} catch ( InputMismatchException e ) {
-				response = -1;
-			} finally {
-				sc.nextLine();
-			}
-			first=false;
-		} while ( 1 > response || lesPaths.size() < response );
-		
-			System.out.println( "Restauration du fichier : " + lesPaths.get(response-1) );
-			try ( ObjectInputStream ois = new ObjectInputStream( Files.newInputStream( lesPaths.get(response-1) ) ) ) {
-				book = ( Book ) ois.readObject();
-				book.setCode(book.getId());
-				monBookDao.create(book);
-				System.out.println( "Restauration terminÃ©e : fichier " + lesPaths.get(response-1).getFileName() );
-			} catch ( ClassNotFoundException e ) {
-				e.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		
 	}
 
 	private static void exportContacts() throws SQLException {

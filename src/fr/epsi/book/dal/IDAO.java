@@ -10,6 +10,4 @@ public interface IDAO<E, ID> {
 	public List<E> findAll() throws SQLException;
 	
 	public E update( E o ) throws SQLException;
-	
-	public void remove( E o ) throws SQLException;
 }

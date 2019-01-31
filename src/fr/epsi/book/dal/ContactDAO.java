@@ -105,7 +105,6 @@ public class ContactDAO implements IDAO<Contact, Long> {
 		return findById(c.getId());
 	}
 	
-	@Override
 	public void remove( Contact c ) throws SQLException {
 		Connection connection = PersistenceManager.getConnection();
 		PreparedStatement st = connection.prepareStatement( REMOVE_QUERY);
